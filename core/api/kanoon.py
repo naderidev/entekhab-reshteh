@@ -1,9 +1,8 @@
 import json
-from pydantic import BaseModel
 import requests
 from bs4 import BeautifulSoup
-
 from core.api.ai import UniMajorDetail
+from core.models import *
 
 
 class Attrs:
@@ -17,18 +16,10 @@ class Attrs:
     # UNI Majors
     COMPUTER_ENGINEERING: int = 250
 
-
-class University(BaseModel):
-    id: int
-    title: str = None
-    provinces: list = None
-    cities: list = None
-
-
-class AcceptanceHistoryItem(BaseModel):
-    rank: int
-    acceptance: str = None
-
+    # Area
+    AREA_1:int = 1
+    AREA_2:int = 2
+    AREA_3:int = 3
 
 class Kanoon:
     uni_api: str = 'https://www.kanoon.ir/EstimateKonkor/UpdateUni'
@@ -123,17 +114,18 @@ class AcceptancesHistory(Kanoon):
             data = []
             soup = BeautifulSoup(req.text, features='html.parser')
             table = soup.find('table')
-            table_body = table.find('tbody')
 
-            for r in table_body.find_all('tr', attrs={'class': f'Sahmieh-{self.area}'}):
-                tds = r.find_all('td')
-                data.append(
-                    AcceptanceHistoryItem(
-                        rank=int(tds[3].text),
-                        acceptance=tds[7].text
+            if table:
+                table_body = table.find('tbody')
+                for r in table_body.find_all('tr', attrs={'class': f'Sahmieh-{self.area}'}):
+                    tds = r.find_all('td')
+                    data.append(
+                        AcceptanceHistoryItem(
+                            rank=int(tds[3].text),
+                            acceptance=tds[7].text
+                        )
                     )
-                )
 
-            return data
+                return data
 
         return []

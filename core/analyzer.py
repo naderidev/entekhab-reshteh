@@ -21,16 +21,16 @@ class AnalyzeRank:
     
     def check(self) -> str:
         ranks = [i.rank for i in self.history]
-        av_ranks = int(sum(ranks) / len(ranks))
-
-        for r in [
-            self._definite,
-            self._logical,
-            self._low
-        ]:
-            c = r(av_ranks)
-            if c:
-                return c
+        if ranks:
+            av_ranks = int(sum(ranks) / len(ranks))
+            for r in [
+                self._definite,
+                self._logical,
+                self._low
+            ]:
+                c = r(av_ranks)
+                if c:
+                    return c
         
         return 'نامشخص'
 

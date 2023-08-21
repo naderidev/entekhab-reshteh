@@ -5,7 +5,6 @@ class AnalyzeRank:
 
     definite = 800
     logical = 200
-    low = 800
 
     rank: int = None
     history: list[AcceptanceHistoryItem] = None
@@ -22,32 +21,33 @@ class AnalyzeRank:
     def check(self) -> str:
         ranks = [i.rank for i in self.history]
         if ranks:
-            av_ranks = int(sum(ranks) / len(ranks))
+            last_rank = sorted(ranks, reverse=True)[0]
             for r in [
                 self._definite,
                 self._logical,
                 self._low
             ]:
-                c = r(av_ranks)
+                c = r(last_rank)
                 if c:
-                    return c
+                    return c + f'({str(last_rank - self.rank)})'
         
         return 'نامشخص'
 
     def _definite(self, rank:int):
-        if (self.rank + self.definite) < rank:
-            return f' قطعی ({str(rank - self.rank)}) '
+        if (rank - self.rank) > self.definite:
+            return f' قطعی '
         
         return False
 
     def _low(self, rank:int):
-        if (self.rank - self.low) > rank:
-            return f' کم ({str(rank - self.rank)}) '
+        if (self.rank - rank) > self.logical:
+            return f' کم '
         
         return False
 
     def _logical(self, rank:int):
-        if (self.rank - self.low) < rank or (self.rank + self.logical) < rank:
-            return f' منطقی ({str(rank - self.rank)}) '
+        if (self.rank - rank) < self.logical and (rank - self.rank) < self.logical:
+            return f' منطقی '
         
         return False
+    

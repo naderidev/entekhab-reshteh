@@ -8,6 +8,7 @@ class Table:
         {'header': ' نام دانشگاه '},
         {'header': ' استان '},
         {'header': ' شهر '},
+        {'header': ' رشته '},
         {'header': ' اولویت '},
         {'header': ' احتمال قبولی '},
         {'header': ' روزانه / نوبت دوم '},
@@ -24,7 +25,7 @@ class Table:
     def render(self):
         data = self.get_data()
         self.worksheet.add_table(
-            'B2:H' + str(len(data)),
+            'B2:I' + str(len(data)),
             {
                 'data': self.get_data(),
                 'columns': self.headers,
@@ -39,6 +40,7 @@ class Table:
                 data.detail.title,
                 data.detail.province,
                 data.detail.city,
+                data.major_title,
                 None,
                 data.possibility,
                 None

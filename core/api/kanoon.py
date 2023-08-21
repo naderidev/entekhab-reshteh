@@ -19,9 +19,9 @@ class Attrs:
 
 class University(BaseModel):
     id: int
-    title: str
-    provinces: list
-    cities: list
+    title: str = None
+    provinces: list = None
+    cities: list = None
 
 
 class Kanoon:
@@ -48,10 +48,13 @@ class Universities(Kanoon):
         return requests.get(
             url=self.uni_api,
             params={
-                'year': self.year,
-                'dept': self.major,
-                'ReshteId': self.uni_major
+                'year': str(self.year),
+                'dept': str(self.major),
+                'ReshteId': str(self.uni_major)
 
+            },
+            headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36'
             }
         )
 
@@ -61,8 +64,9 @@ class Universities(Kanoon):
             return [
                 University(
                     id=uni['UnivercityCode'],
-                    **UniMajorDetail(uni['UnivercityName']).get()
+                    title=uni['UnivercityName']
+                    # **UniMajorDetail(uni['UnivercityName']).get()
                 ) for uni in req.json()
             ]
-        
+
         return []

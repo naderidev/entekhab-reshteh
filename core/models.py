@@ -16,3 +16,4 @@ class AcceptanceHistoryItem(BaseModel):
 class PackData(BaseModel):
     detail: University = None
     possibility: str = None
+    major_title: str = None

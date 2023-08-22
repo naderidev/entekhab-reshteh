@@ -27,31 +27,6 @@ uni_majors = [
 my_rank = 3053
 area = 3
 
-
-def data_major(m: int, m_title: str):
-    return [
-        PackData(
-            detail=uni,
-            possibility=AnalyzeRank(
-                history=AcceptancesHistory(
-                    year=year,
-                    major=major,
-                    uni_major=m,
-                    university=uni.id,
-                    area=area
-                ).get(),
-                rank=my_rank
-            ).check(),
-            major_title=m_title
-
-        ) for uni in Universities(
-            year=year,
-            major=major,
-            uni_major=m
-        ).get()
-    ]
-
-
 Table(
     worksheet=worksheet,
     all_data=list(

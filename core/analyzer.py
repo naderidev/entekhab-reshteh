@@ -4,7 +4,7 @@ from core.api.kanoon import AcceptanceHistoryItem
 class AnalyzeRank:
 
     definite = 800
-    logical = 200
+    logical = 300
 
     rank: int = None
     history: list[AcceptanceHistoryItem] = None
@@ -41,7 +41,7 @@ class AnalyzeRank:
 
     def _low(self, rank:int):
         if (self.rank - rank) > self.logical:
-            return f' کم '
+            return f' ضعیف '
         
         return False
 

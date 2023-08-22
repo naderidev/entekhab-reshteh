@@ -1,3 +1,4 @@
+import itertools
 import xlsxwriter
 from core.api.kanoon import Universities, AcceptancesHistory, Attrs
 from core.models import PackData
@@ -6,7 +7,7 @@ from core.analyzer import AnalyzeRank
 
 from rich.pretty import pprint
 
-workbook = xlsxwriter.Workbook('mohammadreza.xlsx')
+workbook = xlsxwriter.Workbook('test.xlsx')
 worksheet = workbook.add_worksheet(
     'My Worksheet'
 )
@@ -53,12 +54,34 @@ def data_major(m: int, m_title: str):
 
 Table(
     worksheet=worksheet,
-    all_data=data_major(
-        m=Attrs.COMPUTER_ENGINEERING,
-        m_title='مهندسی کامپیوتر'
-    ) + data_major(
-        m=168,
-        m_title='مهندسی حرفه ای کامپیوتر'
+    all_data=list(
+        itertools.chain(
+            *[
+
+                [
+                    PackData(
+                        detail=uni,
+                        possibility=AnalyzeRank(
+                            history=AcceptancesHistory(
+                                year=year,
+                                major=major,
+                                uni_major=_major['id'],
+                                university=uni.id,
+                                area=area
+                            ).get(),
+                            rank=my_rank
+                        ).check(),
+                        major_title=_major['title']
+
+                    ) for uni in Universities(
+                        year=year,
+                        major=major,
+                        uni_major=_major['id']
+
+                    ).get()
+                ] for _major in uni_majors
+            ]
+        )
     )
 
 ).render()
